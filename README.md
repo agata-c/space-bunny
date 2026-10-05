@@ -5,7 +5,11 @@ A cozy, pastel, low-poly browser game: pull the bunny back, let go, and watch a 
 
 **[▶ Play it now](https://agata-c.github.io/space-bunny/)** · [Polski](README.pl.md)
 
-[🎬 Watch a 13-second demo](docs/demo.mp4)
+
+
+https://github.com/user-attachments/assets/f34bb410-2512-4292-80b9-2a53b980afba
+
+
 
 ---
 
