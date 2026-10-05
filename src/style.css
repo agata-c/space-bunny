@@ -1,0 +1,521 @@
+:root {
+  --ink: #4a3a72;
+  --ink-soft: #7d6ba6;
+  --lav: #e9dcfb;
+  --pink: #ffc9e6;
+  --gold: #ffd47a;
+  --glass: rgba(255, 255, 255, 0.42);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  background: radial-gradient(120% 90% at 50% 6%, #f4e9ff 0%, #e6d5fb 42%, #cdb6f2 100%);
+  color: var(--ink);
+  font-family: "Quicksand", "Nunito", "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#stage {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  cursor: grab;
+}
+
+#stage.is-aiming {
+  cursor: grabbing;
+}
+
+/* ---------- loader ---------- */
+
+.loader {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1.1rem;
+  background: radial-gradient(120% 90% at 50% 6%, #f4e9ff 0%, #e6d5fb 45%, #cdb6f2 100%);
+  z-index: 20;
+  transition: opacity 0.55s ease;
+  font-size: 0.85rem;
+  letter-spacing: 0.22em;
+  text-transform: lowercase;
+  color: var(--ink-soft);
+}
+
+.loader.is-gone {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loader-bunny {
+  width: 46px;
+  height: 46px;
+  border-radius: 50% 50% 46% 46%;
+  background: linear-gradient(150deg, #ffd0ea 0%, #ded4f7 46%, #b9c3f2 100%);
+  box-shadow: 0 12px 26px rgba(150, 110, 200, 0.3);
+  animation: bob 1.5s ease-in-out infinite;
+  position: relative;
+}
+
+.loader-bunny::before,
+.loader-bunny::after {
+  content: "";
+  position: absolute;
+  bottom: 62%;
+  width: 12px;
+  height: 26px;
+  border-radius: 60% 60% 45% 45%;
+  background: linear-gradient(150deg, #ffd0ea, #cfc4f5);
+}
+
+.loader-bunny::before {
+  left: 7px;
+  transform: rotate(-14deg);
+}
+
+.loader-bunny::after {
+  right: 7px;
+  transform: rotate(12deg);
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  35% { transform: translateY(-9px) scale(0.97, 1.03); }
+  70% { transform: translateY(0) scale(1.04, 0.96); }
+}
+
+/* ---------- hud ---------- */
+
+.hud {
+  position: fixed;
+  inset: 0;
+  padding: clamp(12px, 2.4vmin, 26px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 10;
+  animation: fadein 0.8s ease both;
+}
+
+.hud-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* R4b item 4: the "no WebGL" message, in the page's own style. */
+.no-webgl {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background: linear-gradient(180deg, #f3e9fb 0%, #e9dcfb 60%, #dcc6f2 100%);
+  text-align: center;
+}
+
+.no-webgl[hidden] {
+  display: none;
+}
+
+.no-webgl-inner {
+  max-width: 34rem;
+  display: grid;
+  gap: 1.1rem;
+  justify-items: center;
+  padding: 2.2rem 2.4rem;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 18px 44px rgba(126, 92, 176, 0.18);
+}
+
+.no-webgl p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+
+/* R4-sounds item 4: the sound pill. The strike-through is drawn in CSS, so
+   there is no image file anywhere near it. */
+.hud-toggles {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+/* The sound button is hidden while the game has no real sound files (Agata 2026-10-05): in index.html the
+   button carries the class btn-sound-hidden-for-now. Remove that class when the files arrive. */
+.btn-sound {
+  position: relative;
+  min-width: 2.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-sound .note {
+  font-size: 1.05rem;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-sound .note-slash {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1.5rem;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transform: translate(-50%, -50%) rotate(-38deg);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.btn-sound.is-off .note-slash {
+  opacity: 0.85;
+}
+
+.btn-sound.is-off .note {
+  opacity: 0.5;
+}
+
+.hud-top {
+  justify-content: space-between;
+}
+
+/* R4a item 2: the PL/EN pill, top right, same soft style, >= 44 px tap target. */
+.btn-lang {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+}
+
+/* R4a item 3: the credits line, bottom left, clear of the bowl and the controls. */
+.credits {
+  position: static;
+  max-width: none;
+  white-space: pre-line; /* the two lines come from the dictionary */
+  text-align: right;
+  /* Agata: "the credits are invisible". Was 0.56rem at 50% opacity in the soft ink,
+     on the pink floor. Bigger, darker, fully opaque, with a light halo. */
+  padding: 0 8px 0 0;
+  font-size: clamp(0.66rem, 1.7vmin, 0.8rem);
+  line-height: 1.5;
+  letter-spacing: 0.05em;
+  color: #8a6fc4; /* Agata: too dark -> a soft purple (size unchanged) */
+  opacity: 0.95;
+  text-shadow: 0 0 8px rgba(255, 240, 255, 0.95), 0 0 2px rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+}
+
+/* R4a item 4: the time line on the end card. */
+
+.hud-bottom {
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  position: relative;
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background: var(--glass);
+  border: 1px solid rgba(255, 255, 255, 0.66);
+  backdrop-filter: blur(9px) saturate(1.2);
+  -webkit-backdrop-filter: blur(9px) saturate(1.2);
+  box-shadow: 0 6px 18px rgba(126, 92, 176, 0.16);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.pill-stars .ico {
+  width: 1.05em;
+  height: 1.05em;
+  fill: var(--gold);
+  filter: drop-shadow(0 0 5px rgba(255, 205, 110, 0.75));
+}
+
+.pill .dim {
+  opacity: 0.5;
+  font-weight: 600;
+}
+
+.pill-stars.is-pop {
+  animation: pop 0.42s cubic-bezier(0.34, 1.7, 0.5, 1);
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+.progress-dots {
+  display: inline-flex;
+  gap: 0.34rem;
+}
+
+.progress-dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(122, 96, 168, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(122, 96, 168, 0.16);
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.progress-dots i.on {
+  background: var(--gold);
+  box-shadow: 0 0 9px rgba(255, 205, 110, 0.9);
+  transform: scale(1.16);
+}
+
+.hint,
+.legend {
+  font-size: clamp(0.66rem, 1.6vmin, 0.8rem);
+  letter-spacing: 0.16em;
+  text-transform: lowercase;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.hint {
+  padding: 0.42rem 0.95rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.34);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.hint.is-hidden {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.legend {
+  opacity: 0.42;
+}
+
+.legend b {
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: 0;
+}
+
+/* ---------- end card ---------- */
+
+.endcard[hidden],
+.hud[hidden] {
+  display: none;
+}
+
+.endcard {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  z-index: 15;
+  background: radial-gradient(90% 70% at 50% 40%, rgba(255, 255, 255, 0.24), rgba(150, 118, 205, 0.5));
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: fadein 1s ease both;
+}
+
+.endcard-inner {
+  text-align: center;
+  padding: clamp(1.4rem, 4vmin, 2.6rem) clamp(1.8rem, 6vmin, 3.6rem);
+  border-radius: 34px;
+  /* Agata 2026-10-05: "impossible to read, the panel is too transparent".
+     Nearly opaque, so the text reads over the dark space view. */
+  background: rgba(252, 247, 255, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 26px 60px rgba(40, 24, 90, 0.45);
+  animation: rise 0.9s cubic-bezier(0.2, 1, 0.3, 1) both;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(22px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+.endcard h1 {
+  font-size: clamp(1.9rem, 7vmin, 3.1rem);
+  letter-spacing: 0.02em;
+  font-weight: 800;
+  text-transform: lowercase;
+  background: linear-gradient(100deg, #d4519f, #8a6be0 55%, #4f86e0); /* deeper tones: readable on the light panel */
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.endcard p {
+  margin-top: 0.6rem;
+  font-size: clamp(0.92rem, 2.6vmin, 1.12rem); /* Agata: hard to read; larger */
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  color: #4d3d78; /* darker ink on the light panel */
+}
+
+.endcard-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 0.7rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  pointer-events: auto;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+  color: var(--ink);
+  padding: 0.66rem 1.25rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: 0 8px 20px rgba(126, 92, 176, 0.16);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+/* R3b item 4 (c): the bottom-right control row - legend then Restart, on one
+   pill so there is no stray lilac rectangle behind the text. Both >= 44 px. */
+.hud-bottom {
+  position: relative;
+}
+
+.hud-corner {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.hud-controls {
+  position: static;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  padding: 0.3rem 0.4rem 0.3rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 8px 20px rgba(126, 92, 176, 0.16);
+}
+
+.hud-controls .legend {
+  opacity: 0.72;
+  background: none;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.btn-restart {
+  min-height: 44px;
+  padding: 0.5rem 1.05rem;
+  font-size: 0.74rem;
+}
+
+/* The one hint, above the bowl: absolutely positioned by Hud.placeHint() from
+   the rim's projected screen position, on the soft pill and nothing else. */
+.hint-above {
+  position: fixed;
+  left: 50%;
+  top: 40%;
+  z-index: 5;
+  pointer-events: none;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.46);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 16px rgba(126, 92, 176, 0.12);
+}
+
+@media (max-width: 560px) {
+  .hint-above {
+    font-size: 0.62rem;
+    padding: 0.34rem 0.7rem;
+  }
+  .hud-controls .legend {
+    font-size: 0.6rem;
+  }
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(126, 92, 176, 0.24);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.btn-primary {
+  background: linear-gradient(120deg, #ffb3dd, #b6a9f2);
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(120, 80, 170, 0.35);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+/* Agata 2026-10-05: "on hover the button is white with white copy". The generic
+   .btn:hover (white 85%) beat .btn-primary and left the white text on white.
+   Hover stays pink/purple, a little deeper, so the white label stays readable. */
+.btn-primary:hover {
+  background: linear-gradient(120deg, #f78cc6, #8f7fe8);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.75);
+}
+/* Agata: "no black outline". The default focus ring was the dark outline. Pointer
+   focus shows nothing; keyboard focus gets a soft palette glow instead. */
+.btn:focus {
+  outline: none;
+}
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(190, 160, 245, 0.7), 0 8px 20px rgba(126, 92, 176, 0.2);
+}
+
+@media (max-width: 560px) {
+  .legend { display: none; }
+}

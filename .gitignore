@@ -1,0 +1,20 @@
+# dependencies and build output
+node_modules/
+dist/
+
+# logs
+*.log
+
+# working files from building the game with AI (kept locally, not published)
+.shots/
+backups/
+rounds/
+reports/
+SPEC.md
+bunny-puppet-parts/
+docs/agata-look-*.json
+*.psb
+/*.png
+tools/
+docs/SOUNDS.md
+docs/sounds-originals/

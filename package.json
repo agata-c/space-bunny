@@ -1,0 +1,33 @@
+{
+  "name": "space-bunny",
+  "version": "1.0.0",
+  "description": "Fling a floppy bunny out of his glass bubble, catch the stars, and blast him into space. A cozy low-poly browser game built with Three.js.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "threejs",
+    "game",
+    "low-poly",
+    "physics",
+    "bunny",
+    "pastel"
+  ],
+  "license": "CC-BY-4.0",
+  "dependencies": {
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "lil-gui": "^0.21.0",
+    "vite": "^8.3.2"
+  },
+  "author": "Agata Poniatowska-Ormicka",
+  "homepage": "https://agata-c.github.io/space-bunny/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agata-c/space-bunny.git"
+  }
+}

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#e9dcfb" />
+    <title>Space Bunny</title>
+    <!-- R4b item 3: share info -->
+    <meta name="description" content="Fling a floppy bunny out of his glass bubble, catch the stars, and blast him into space. A cozy low-poly browser game." />
+    <meta property="og:title" content="Space Bunny" />
+    <meta property="og:description" content="Fling a floppy bunny out of his glass bubble, catch the stars, and blast him into space. A cozy low-poly browser game." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://agata-c.github.io/space-bunny/" />
+    <meta property="og:image" content="https://agata-c.github.io/space-bunny/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Space Bunny" />
+    <meta name="twitter:description" content="Fling a floppy bunny out of his glass bubble, catch the stars, and blast him into space. A cozy low-poly browser game." />
+    <meta name="twitter:image" content="https://agata-c.github.io/space-bunny/cover.png" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>&#9733;</text></svg>" />
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <canvas id="stage" aria-label="Space Bunny game"></canvas>
+
+    <!-- R4b item 4: shown only when WebGL is unavailable or the renderer throws. -->
+    <div id="noWebgl" class="no-webgl" hidden>
+      <div class="no-webgl-inner">
+        <div class="loader-bunny"></div>
+        <p id="noWebglText"></p>
+      </div>
+    </div>
+
+    <noscript>
+      <div class="no-webgl">
+        <div class="no-webgl-inner">
+          <p id="noscriptEn">this little world is drawn with WebGL, so it needs javascript switched on.</p>
+          <p id="noscriptPl">ten mały świat rysowany jest w WebGL, więc potrzebuje włączonej javascript.</p>
+        </div>
+      </div>
+    </noscript>
+
+    <div id="loader" class="loader">
+      <div class="loader-bunny"></div>
+      <!-- R4a: no copy in the markup. Every visible string lives in src/ui/i18n.js. -->
+      <p id="loaderText"></p>
+    </div>
+
+    <div id="hud" class="hud" hidden>
+      <div class="hud-row hud-top">
+        <div class="pill pill-stars" id="starCounter">
+          <svg viewBox="0 0 24 24" class="ico" aria-hidden="true">
+            <path d="M12 1.5c.5 5.2 3.3 8.1 8.5 8.6-5.2.5-8 3.4-8.5 8.6-.5-5.2-3.3-8.1-8.5-8.6C8.7 9.6 11.5 6.7 12 1.5Z"/>
+          </svg>
+          <span id="starCount">0</span><span class="dim">/<span id="starTotal">0</span></span>
+        </div>
+        <!-- R3a item 2: the constellation progress pill is gone with the node game. -->
+        <!-- R4a item 2: the PL/EN switch, top right, same soft pill style. -->
+        <div class="hud-toggles">
+          <button id="btnSound" type="button" class="btn btn-lang btn-sound" title="sound on" aria-label="sound on" aria-pressed="true">
+            <span class="note" aria-hidden="true">&#9834;</span>
+            <span class="note-slash" aria-hidden="true"></span>
+          </button>
+          <button id="btnLang" type="button" class="btn btn-lang" title="PL / EN">EN</button>
+        </div>
+      </div>
+
+      <div class="hud-row hud-bottom">
+        <!-- R3b item 4 (c): ONE hint, centred ABOVE THE BOWL just above the rim;
+             its position is recomputed from the rim's projected screen point. -->
+        <p class="hint hint-above" id="hintAbove"></p>
+        <!-- Agata 2026-10-05: the credits sit UNDER the controls pill, bottom right,
+             in two short lines (they were one long line, bottom left). -->
+        <div class="hud-corner">
+          <!-- R3b item 4: legend directly LEFT of Restart, one bottom-right row, on
+               one pill, so there is no stray lilac rectangle behind the text. -->
+          <div class="hud-controls">
+            <p class="legend" id="legend"></p>
+            <button id="btnRestart" type="button" class="btn btn-restart"></button>
+          </div>
+          <p class="credits" id="credits"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- R4a item 4: the new end card. Short, and only ever shown after a WIN. -->
+    <div id="endcard" class="endcard" hidden>
+      <div class="endcard-inner">
+        <h1 id="endTitle"></h1>
+        <p id="endcardLine"></p>
+        <div class="endcard-actions">
+          <button id="btnReplay" type="button" class="btn btn-primary"></button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
