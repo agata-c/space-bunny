@@ -5,7 +5,11 @@ Przytulna, pastelowa gra przeglądarkowa w stylu low-poly: pociągnij królika d
 
 **[▶ Zagraj teraz](https://agata-c.github.io/space-bunny/)** · [English](README.md)
 
-[🎬 Obejrzyj 13-sekundowe demo](docs/demo.mp4)
+
+
+https://github.com/user-attachments/assets/1e2403b0-e2e3-4a56-8908-a35125dfa3f9
+
+
 
 ---
 
